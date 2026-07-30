@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>English ↔ Nepali Language Tutor</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        :root{
+
+            --bg:#f5f7fb;
+            --surface:#ffffff;
+            --surface-2:#f0f3f8;
+
+            --text:#111827;
+            --muted:#6b7280;
+
+            --primary:#2563eb;
+
+            --border:#e5e7eb;
+
+            --shadow:
+            0 10px 35px rgba(0,0,0,.05);
+
+            --radius:18px;
+
+        }
+
+        body.dark{
+
+            --bg:#0f172a;
+
+            --surface:#172033;
+
+            --surface-2:#1f2937;
+
+            --text:#f3f4f6;
+
+            --muted:#94a3b8;
+
+            --border:#334155;
+
+            --shadow:
+            0 12px 40px rgba(0,0,0,.45);
+
+        }
+
+        body{
+
+            font-family:
+            "Inter",
+            "Noto Sans Devanagari",
+            sans-serif;
+
+            background:var(--bg);
+
+            color:var(--text);
+
+            transition:
+            background .35s,
+            color .35s;
+
+            min-height:100vh;
+
+        }
+
+        .container{
+
+            width:min(1200px,92%);
+            margin:auto;
+
+        }
+
+        header{
+
+            display:flex;
+
+            justify-content:space-between;
+
+            align-items:center;
+
+            padding:28px 0;
+
+        }
+
+        .logo{
+
+            font-size:1.4rem;
+            font-weight:700;
+
+        }
+
+        .logo span{
+
+            color:var(--primary);
+
+        }
+
+        .theme-btn{
+
+            border:none;
+
+            cursor:pointer;
+
+            background:var(--surface);
+
+            color:var(--text);
+
+            padding:10px 18px;
+
+            border-radius:999px;
+
+            box-shadow:var(--shadow);
+
+            transition:.25s;
+
+        }
+
+        .theme-btn:hover{
+
+            transform:translateY(-2px);
+
+        }
+
+        .hero{
+
+            text-align:center;
+
+            padding:30px 0 55px;
+
+        }
+
+        .hero h1{
+
+            font-size:clamp(2rem,5vw,3.3rem);
+
+            margin-bottom:15px;
+
+        }
+
+        .hero p{
+
+            color:var(--muted);
+
+            max-width:700px;
+
+            margin:auto;
+
+            line-height:1.7;
+
+        }
+
+        .tabs{
+
+            display:flex;
+
+            justify-content:center;
+
+            gap:15px;
+
+            margin-bottom:35px;
+
+            flex-wrap:wrap;
+
+        }
+
+        .tab{
+
+            cursor:pointer;
+
+            border:none;
+
+            background:var(--surface);
+
+            color:var(--text);
+
+            border-radius:999px;
+
+            padding:12px 24px;
+
+            font-size:.95rem;
+
+            transition:.25s;
+
+            box-shadow:var(--shadow);
+
+        }
+
+        .tab.active{
+
+            background:var(--primary);
+
+            color:white;
+
+        }
+
+        .panel{
+
+            display:none;
+
+        }
+
+        .panel.active{
+
+            display:block;
+
+            animation:fade .3s ease;
+
+        }
+
+        @keyframes fade{
+
+            from{
+
+                opacity:0;
+                transform:translateY(12px);
+
+            }
+
+            to{
+
+                opacity:1;
+                transform:none;
+
+            }
+
+        }
+
+        .card{
+
+            background:var(--surface);
+
+            border-radius:var(--radius);
+
+            box-shadow:var(--shadow);
+
+            padding:30px;
+
+        }
+
+        .controls{
+
+            display:flex;
+
+            flex-wrap:wrap;
+
+            gap:15px;
+
+            margin-bottom:30px;
+
+        }
+
+        select{
+
+            padding:12px 14px;
+
+            border-radius:12px;
+
+            border:1px solid var(--border);
+
+            background:var(--surface);
+
+            color:var(--text);
+
+            font-size:.95rem;
+
+        }
+
+        button{
+
+            font-family:inherit;
+
+        }
+
+        .primary{
+
+            background:var(--primary);
+
+            color:white;
+
+            border:none;
+
+            padding:12px 18px;
+
+            border-radius:12px;
+
+            cursor:pointer;
+
+            transition:.25s;
+
+        }
+
+        .primary:hover{
+
+            transform:translateY(-2px);
+
+        }
+
+        .secondary{
+
+            background:var(--surface-2);
+
+            color:var(--text);
+
+            border:none;
+
+            padding:12px 18px;
+
+            border-radius:12px;
+
+            cursor:pointer;
+
+        }
+
+        .flashcard-area{
+
+            display:flex;
+
+            justify-content:center;
+
+            margin:45px 0;
+
+        }
+
+        .flashcard{
+
+            width:340px;
+
+            height:240px;
+
+            perspective:1200px;
+
+            cursor:pointer;
+
+        }
+
+        .flashcard-inner{
+
+            position:relative;
+
+            width:100%;
+            height:100%;
+
+            transition:transform .7s;
+
+            transform-style:preserve-3d;
+
+        }
+
+        .flashcard.flipped .flashcard-inner{
+
+            transform:rotateY(180deg);
+
+        }
+
+        .front,
+        .back{
+
+            position:absolute;
+
+            inset:0;
+
+            background:var(--surface);
+
+            border-radius:24px;
+
+            box-shadow:var(--shadow);
+
+            display:flex;
+
+            justify-content:center;
+
+            align-items:center;
+
+            flex-direction:column;
+
+            padding:25px;
+
+            text-align:center;
+
+            backface-visibility:hidden;
+
+        }
+
+        .front h2{
+
+            font-size:2rem;
+
+        }
+
+        .back{
+
+            transform:rotateY(180deg);
+
+            gap:14px;
+
+        }
+
+        .translation{
+
+            font-size:1.6rem;
+
+            font-weight:600;
+
+        }
+
+        .phonetic{
+
+            color:var(--primary);
+
+            font-style:italic;
+
+        }
+
+        .example{
+
+            color:var(--muted);
+
+            line-height:1.6;
+
+        }
+
+        .navigation{
+
+            display:flex;
+
+            justify-content:center;
+
+            gap:14px;
+
+            flex-wrap:wrap;
+
+        }
+
+        .status{
+
+            display:flex;
+
+            justify-content:center;
+
+            gap:14px;
+
+            margin-top:22px;
+
+            flex-wrap:wrap;
+
+        }
+
+        .chat-container{
+
+            display:flex;
+
+            flex-direction:column;
+
+            gap:18px;
+
+            height:650px;
+
+        }
+
+        .chips{
+
+            display:flex;
+
+            flex-wrap:wrap;
+
+            gap:10px;
+
+        }
+
+        .chip{
+
+            padding:10px 15px;
+
+            border-radius:999px;
+
+            background:var(--surface-2);
+
+            cursor:pointer;
+
+            transition:.2s;
+
+            font-size:.9rem;
+
+        }
+
+        .chip:hover{
+
+            transform:translateY(-2px);
+
+        }
+
+        .chat-box{
+
+            flex:1;
+
+            overflow-y:auto;
+
+            border-radius:18px;
+
+            background:var(--surface-2);
+
+            padding:22px;
+
+            display:flex;
+
+            flex-direction:column;
+
+            gap:15px;
+
+        }
+
+        .message{
+
+            max-width:80%;
+
+            padding:15px 18px;
+
+            border-radius:16px;
+
+            line-height:1.7;
+
+            white-space:pre-wrap;
+
+        }
+
+        .user{
+
+            align-self:flex-end;
+
+            background:var(--primary);
+
+            color:white;
+
+        }
+
+        .bot{
+
+            align-self:flex-start;
+
+            background:var(--surface);
+
+        }
+
+        .chat-input{
+
+            display:flex;
+
+            gap:14px;
+
+        }
+
+        textarea{
+
+            flex:1;
+
+            resize:none;
+
+            height:70px;
+
+            padding:15px;
+
+            border-radius:16px;
+
+            border:1px solid var(--border);
+
+            background:var(--surface);
+
+            color:var(--text);
+
+            font-size:1rem;
+
+            font-family:inherit;
+
+        }
+
+        footer{
+
+            text-align:center;
+
+            color:var(--muted);
+
+            padding:45px 0 30px;
+
+            font-size:.9rem;
+
+        }
+
+        @media(max-width:768px){
+
+            .flashcard{
+
+                width:100%;
+                max-width:340px;
+
+            }
+
+            .chat-container{
+
+                height:550px;
+
+            }
+
+            .chat-input{
+
+                flex-direction:column;
+
+            }
+
+            textarea{
+
+                width:100%;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+
+            <div class="logo">
+                <span>English</span> ↔ <span>नेपाली</span>
+            </div>
+
+            <button class="theme-btn" id="themeToggle">
+                🌙 Dark Mode
+            </button>
+
+        </header>
+
+        <section class="hero">
+
+            <h1>Learn English & Nepali Naturally</h1>
+
+            <p>
+                Practice vocabulary using interactive flashcards and improve your
+                conversation skills with an AI tutor that explains everything in
+                both English and Nepali, complete with pronunciation guidance.
+            </p>
+
+        </section>
+
+        <div class="tabs">
+
+            <button class="tab active" data-tab="flashcards">
+                📚 Flashcards
+            </button>
+
+            <button class="tab" data-tab="chat">
+                🤖 AI Tutor
+            </button>
+
+        </div>
+
+        <!-- ================= FLASHCARDS ================= -->
+
+        <section id="flashcards" class="panel active">
+
+            <div class="card">
+
+                <div class="controls">
+
+                    <select id="directionSelect">
+
+                        <option value="ne-en">
+                            Nepali → English
+                        </option>
+
+                        <option value="en-ne">
+                            English → Nepali
+                        </option>
+
+                    </select>
+
+                    <select id="categorySelect">
+
+                        <option value="Greetings">
+                            Greetings
+                        </option>
+
+                        <option value="Daily Life">
+                            Daily Life
+                        </option>
+
+                        <option value="Travel">
+                            Travel
+                        </option>
+
+                        <option value="Food & Dining">
+                            Food & Dining
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="flashcard-area">
+
+                    <div class="flashcard" id="flashcard">
+
+                        <div class="flashcard-inner">
+
+                            <div class="front">
+
+                                <h2 id="frontWord">
+
+                                    नमस्ते
+
+                                </h2>
+
+                            </div>
+
+                            <div class="back">
+
+                                <div
+                                    class="translation"
+                                    id="translation">
+
+                                    Hello
+
+                                </div>
+
+                                <div
+                                    class="phonetic"
+                                    id="phonetic">
+
+                                    Namaste
+
+                                </div>
+
+                                <div
+                                    class="example"
+                                    id="example">
+
+                                    Example sentence appears here.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="navigation">
+
+                    <button
+                        class="secondary"
+                        id="previousCard">
+
+                        ◀ Previous
+
+                    </button>
+
+                    <button
+                        class="primary"
+                        id="flipCard">
+
+                        Flip Card
+
+                    </button>
+
+                    <button
+                        class="secondary"
+                        id="nextCard">
+
+                        Next ▶
+
+                    </button>
+
+                </div>
+
+                <div class="status">
+
+                    <button
+                        class="primary"
+                        id="masteredBtn">
+
+                        ✅ Mastered
+
+                    </button>
+
+                    <button
+                        class="secondary"
+                        id="practiceBtn">
+
+                        📖 Needs Practice
+
+                    </button>
+
+                </div>
+
+                <div
+                    style="
+                        text-align:center;
+                        margin-top:24px;
+                        color:var(--muted);
+                    ">
+
+                    <strong id="cardCounter">
+
+                        Card 1 of 1
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= CHATBOT ================= -->
+
+        <section id="chat" class="panel">
+
+            <div class="card">
+
+                <div class="chips">
+
+                    <div
+                        class="chip"
+                        data-prompt="Correct my sentence">
+
+                        Correct my sentence
+
+                    </div>
+
+                    <div
+                        class="chip"
+                        data-prompt="Explain a grammar rule">
+
+                        Explain a grammar rule
+
+                    </div>
+
+                    <div
+                        class="chip"
+                        data-prompt="Practice ordering food">
+
+                        Practice ordering food
+
+                    </div>
+
+                    <div
+                        class="chip"
+                        data-prompt="Teach me useful travel phrases">
+
+                        Travel phrases
+
+                    </div>
+
+                    <div
+                        class="chip"
+                        data-prompt="Let's practice greetings">
+
+                        Greetings
+
+                    </div>
+
+                </div>
+
+                <div
+                    class="chat-container"
+                    style="margin-top:22px;">
+
+                    <div
+                        class="chat-box"
+                        id="chatBox">
+
+                        <div class="message bot">
+
+                            👋 Hello!
+
+                            <br><br>
+
+                            I'm your bilingual English ↔ Nepali tutor.
+
+                            <br><br>
+
+                            Ask me anything about vocabulary,
+                            pronunciation, grammar, or conversation practice.
+
+                        </div>
+
+                    </div>
+
+                    <div class="chat-input">
+
+                        <textarea
+                            id="userInput"
+                            placeholder="Type your message here..."></textarea>
+
+                        <button
+                            class="primary"
+                            id="sendButton">
+
+                            Send
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <footer>
+
+            English ↔ Nepali Language Tutor • Powered by Google Gemini
+
+        </footer>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

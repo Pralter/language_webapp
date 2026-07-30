@@ -1,0 +1,29 @@
+{
+  "name": "my-gemini-app",
+  "version": "1.0.0",
+  "description": "A bilingual English-Nepali language learning web app powered by Google Gemini.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "gemini",
+    "google-ai",
+    "language-learning",
+    "english",
+    "nepali",
+    "express",
+    "vanilla-javascript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
