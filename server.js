@@ -13,31 +13,28 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Ensure API key exists
+// Warn locally if key is missing instead of crashing serverless container
 if (!process.env.GEMINI_API_KEY) {
-    console.error("\nERROR: GEMINI_API_KEY was not found.");
-    console.error("Create a .env file in the project root:");
-    console.error("GEMINI_API_KEY=YOUR_API_KEY\n");
-    process.exit(1);
+    console.warn("\n⚠️ WARNING: GEMINI_API_KEY is not defined in environment variables.\n");
 }
-
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.use(express.json());
 
-// Serve frontend
+// Serve static frontend
 app.use(express.static(path.join(__dirname, "public")));
 
 /**
  * POST /api/chat
- * Body:
- * {
- *    "message": "Hello"
- * }
  */
 app.post("/api/chat", async (req, res) => {
     try {
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({
+                success: false,
+                error: "Server configuration error: Missing GEMINI_API_KEY."
+            });
+        }
+
         const { message } = req.body;
 
         if (!message || message.trim() === "") {
@@ -47,16 +44,17 @@ app.post("/api/chat", async (req, res) => {
             });
         }
 
+        // Initialize Gemini dynamically per request
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({
-            // Allow overriding the model via env var for compatibility
-            model: process.env.GEMINI_MODEL || "gemini-1.0",
+            // Updated to valid active model
+            model: process.env.GEMINI_MODEL || "gemini-1.5-flash",
             systemInstruction: `
 You are a friendly bilingual language tutor.
 
 Your purpose is to teach English to native Nepali speakers and Nepali to native English speakers.
 
 Always:
-
 • Be encouraging and patient.
 • Keep explanations beginner-friendly.
 • Whenever appropriate, provide BOTH English and Nepali (Devanagari).
@@ -84,16 +82,14 @@ Keep responses concise unless the user asks for detailed explanations.
         });
 
         const result = await model.generateContent(message);
-
-        const response = result.response.text();
+        const responseText = result.response.text();
 
         res.json({
             success: true,
-            reply: response
+            reply: responseText
         });
 
     } catch (error) {
-
         console.error("\n===== GEMINI ERROR =====");
         console.error(error);
         console.error("========================\n");
@@ -120,10 +116,16 @@ app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.listen(PORT, () => {
-    console.log("====================================");
-    console.log(" English ↔ Nepali Language Tutor");
-    console.log("====================================");
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log("Gemini API loaded successfully.");
-});
+// Only listen on a port during local development
+if (process.env.NODE_ENV !== "production") {
+    app.listen(PORT, () => {
+        console.log("====================================");
+        console.log(" English ↔ Nepali Language Tutor");
+        console.log("====================================");
+        console.log(`Server running on http://localhost:${PORT}`);
+        console.log("====================================");
+    });
+}
+
+// Export for Vercel Serverless Function engine
+export default app;
